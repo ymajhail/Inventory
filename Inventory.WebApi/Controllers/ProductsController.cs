@@ -34,7 +34,7 @@ namespace Inventory.WebApi.Controllers
             return CreatedAtRoute("GetProductById", new { id = created.Id }, created);
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<ActionResult<List<ProductReadDto>>> List(
             [FromQuery] string? search, [FromQuery] string? category,
             [FromQuery] int page =1, [FromQuery] int pageSize = 10, CancellationToken ct = default)
