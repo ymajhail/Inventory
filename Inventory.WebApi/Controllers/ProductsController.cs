@@ -1,5 +1,6 @@
 ﻿using Inventory.Application.Products;
 using Inventory.Application.Products.Models;
+using Inventory.Domain.Abstractions;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Inventory.WebApi.Controllers
@@ -9,19 +10,28 @@ namespace Inventory.WebApi.Controllers
     public class ProductsController : ControllerBase
     {
         private readonly IProductService _create;
+        private readonly IProductQueries _queries;
         private readonly ProductQueryService _query;
 
-        public ProductsController(IProductService create, ProductQueryService query)
+        public ProductsController(IProductService create, IProductQueries queries, ProductQueryService query)
         {
             _create = create;
+            _queries = queries;
             _query = query;
+        }
+
+        [HttpGet("{id:int}", Name = "GetProductById")]
+        public async Task<ActionResult<ProductReadDto>> GetById(int id, CancellationToken ct)
+        {
+            var dto = await _queries.GetByIdAsync(id, ct);
+            return dto is null ? NotFound() : Ok(dto);
         }
 
         [HttpPost]
         public async Task<ActionResult<ProductReadDto>> Create(ProductCreateDto dto, CancellationToken ct)
         {
             var created = await _create.CreateAsync(dto, ct);
-            return CreatedAtAction(nameof(Get), new { id = created.Id }, created);
+            return CreatedAtRoute("GetProductById", new { id = created.Id }, created);
         }
 
         [HttpPost]

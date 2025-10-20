@@ -1,5 +1,6 @@
 using Inventory.Application.Orders;
 using Inventory.Application.Products;
+using Inventory.Application.Products.Models;
 using Inventory.Domain.Abstractions;
 using Inventory.Infrastructure;
 using Inventory.Infrastructure.Repositories;
@@ -16,8 +17,10 @@ builder.Services.AddDbContext<AppDbContext>(o => o.UseSqlite("Data Source=invent
 builder.Services.AddScoped<IProductRepository, ProductRepository>();
 builder.Services.AddScoped<IOrderRepository, OrderRepository>();
 builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<IProductQueries, ProductQueries>();
 builder.Services.AddScoped<ProductQueryService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IOrderQueries, OrderQueries>();
 
 
 builder.Services.AddControllers();
@@ -36,7 +39,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
+//app.UseAuthorization();
 
 app.MapControllers();
 
